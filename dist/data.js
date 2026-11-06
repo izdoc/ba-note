@@ -1,78 +1,154 @@
-const chapters=[
-{title:'Nền tảng kiểm thử',en:'Fundamentals of Testing',min:180,weight:8,topics:[
-['Kiểm thử là gì?','Kiểm thử gồm nhiều hoạt động nhằm đánh giá chất lượng và phát hiện vấn đề. Kiểm thử động chạy phần mềm; kiểm thử tĩnh xem xét tài liệu hoặc mã mà không chạy. Mục tiêu có thể là tìm lỗi, giảm rủi ro, xác minh yêu cầu, thẩm định nhu cầu và cung cấp thông tin quyết định.','Với API chuyển tiền, review yêu cầu là kiểm thử tĩnh; gọi API với số dư thiếu là kiểm thử động.'],
-['Error, defect, failure và root cause','Error là sai sót của con người. Defect là khiếm khuyết trong sản phẩm công việc. Failure là hành vi sai quan sát được khi thực thi. Root cause là nguyên nhân gốc cần xử lý để tránh lặp lại. Một defect có thể chỉ gây failure trong điều kiện cụ thể. Debugging tìm nguyên nhân và sửa defect; testing phát hiện, đánh giá và kiểm tra sau sửa.','Lập trình viên hiểu nhầm dấu ≥ thành > (error), mã có điều kiện sai (defect), khách đủ 18 tuổi bị từ chối (failure).'],
-['Bảy nguyên lý kiểm thử','Kiểm thử cho thấy có defect, không chứng minh không có defect; kiểm thử toàn bộ thường không khả thi; kiểm thử sớm tiết kiệm thời gian và tiền; defect thường tập trung; test bị mòn theo thời gian; kiểm thử phụ thuộc bối cảnh; không có defect vẫn vô ích nếu sản phẩm không đáp ứng nhu cầu. Cần bổ sung và thay đổi test khi hệ thống phát triển.','Chạy mãi bộ test đăng nhập cũ có thể bỏ qua luồng xác thực mới.'],
-['Hoạt động, testware và truy vết','Lập kế hoạch xác định mục tiêu và cách tiếp cận. Giám sát so sánh thực tế với kế hoạch; kiểm soát điều chỉnh. Phân tích xác định cần test gì; thiết kế xác định test thế nào; triển khai chuẩn bị testware; thực thi so sánh thực tế với kỳ vọng; hoàn tất tổng hợp và lưu tài sản. Truy vết nối yêu cầu, test và defect để đánh giá bao phủ và tác động thay đổi.','Yêu cầu R01 → điều kiện kiểm thử → test TC01 → defect D01.'],
-['Kỹ năng, whole-team và độc lập','Tester cần tư duy phản biện, tò mò, giao tiếp, hiểu nghiệp vụ và kỹ thuật. Whole-team approach coi chất lượng là trách nhiệm chung; tester cộng tác với developer và business. Độc lập giúp nhìn khác tác giả, nhưng có thể làm giảm hợp tác nếu tạo khoảng cách. QA hướng vào quy trình và phòng ngừa; testing hướng vào đánh giá sản phẩm.','Nêu bằng chứng lỗi và tác động khách hàng thay vì quy lỗi cho người viết mã.']]},
-{title:'Kiểm thử trong vòng đời phát triển',en:'Testing Throughout the SDLC',min:130,weight:6,topics:[
-['SDLC, shift left và DevOps','Cách kiểm thử thích nghi với mô hình tuần tự, lặp hoặc tăng trưởng. Hoạt động phát triển nên có hoạt động test tương ứng. Shift left đưa phản hồi sớm hơn, không bỏ kiểm thử sau triển khai. DevOps thúc đẩy cộng tác, CI/CD và tự động hóa; vẫn cần đánh giá thủ công. Retrospective tìm cải tiến cho vòng tiếp theo.','Review tiêu chí chấp nhận trước khi lập trình giúp tránh làm sai yêu cầu.'],
-['Test levels và test types','Năm mức: component, component integration, system, system integration và acceptance. Mức test khác nhau ở đối tượng, mục tiêu và trách nhiệm. Loại test gồm functional, non-functional, black-box và white-box. Functional kiểm tra hệ thống làm gì; non-functional đánh giá hệ thống làm tốt đến đâu.','Test tích hợp hệ thống kiểm tra kết nối ứng dụng giao dịch với ngân hàng; performance test đo thời gian phản hồi.'],
-['Confirmation và regression','Confirmation test kiểm tra defect đã sửa thành công, thường chạy lại test từng thất bại. Regression test tìm tác dụng phụ do thay đổi ở phần đã sửa hoặc phần khác. Phân tích tác động giúp chọn phạm vi regression. Hai mục tiêu này khác nhau dù có thể dùng chung test case.','Sửa tính phí: chạy lại ca tính phí sai để confirmation, kiểm tra tổng tiền rút để regression.'],
-['Maintenance testing','Kiểm thử bảo trì xuất phát từ sửa đổi, di chuyển môi trường hoặc ngừng hệ thống. Phạm vi phụ thuộc rủi ro, kích thước thay đổi và quy mô hệ thống. Phân tích tác động xác định khu vực bị ảnh hưởng, cả các hệ thống liên quan.','Nâng cơ sở dữ liệu cần kiểm tra tương thích, dữ liệu, backup/restore và các tích hợp.']]},
-{title:'Kiểm thử tĩnh',en:'Static Testing',min:80,weight:4,topics:[
-['Giá trị của static testing','Không cần chạy phần mềm: review yêu cầu, thiết kế, mã, test case hoặc phân tích tĩnh bằng công cụ. Tìm trực tiếp defect như mơ hồ, thiếu nhất quán, mã không đạt chuẩn. Dynamic testing thường quan sát failure rồi điều tra defect. Tĩnh và động bổ sung nhau.','Hai mục yêu cầu quy định hạn mức khác nhau có thể phát hiện ngay trong review.'],
-['Quy trình và vai trò review','Các hoạt động: lập kế hoạch, khởi động, review cá nhân, trao đổi/phân tích, sửa và báo cáo. Author tạo sản phẩm; reviewer tìm bất thường; moderator điều phối; scribe ghi nhận; review leader chịu trách nhiệm tổ chức; manager cấp nguồn lực. Không phải review nào cũng cần tất cả vai trò tách biệt.','Reviewer ghi bất thường trước họp; tác giả sửa sau khi nhóm thống nhất defect.'],
-['Các loại review và yếu tố thành công','Informal review ít nghi thức; walkthrough thường do tác giả dẫn; technical review có reviewer chuyên môn và moderator; inspection là loại chính thức nhất, theo quy trình và thu thập số liệu. Mục tiêu rõ, tài liệu nhỏ, thời gian đủ, môi trường tin cậy và hỗ trợ quản lý giúp review hiệu quả.','Chọn walkthrough để tác giả giải thích luồng nghiệp vụ mới và nhận phản hồi sớm.']]},
-{title:'Phân tích & thiết kế kiểm thử',en:'Test Analysis and Design',min:390,weight:11,topics:[
-['Phân vùng tương đương — EP','Chia dữ liệu thành các vùng được kỳ vọng xử lý giống nhau. Chọn đại diện mỗi vùng, gồm vùng hợp lệ và không hợp lệ. Bao phủ EP = số vùng đã test / tổng vùng đã xác định. Việc chọn một đại diện không đảm bảo mọi giá trị trong vùng đều đúng.','Tuổi hợp lệ 18–60, số nguyên: ba vùng <18, 18–60, >60. Chọn 17, 30, 61.'],
-['Phân tích giá trị biên — BVA','Dùng cho phân vùng có thứ tự. BVA 2 giá trị kiểm tra giá trị biên và láng giềng gần nhất thuộc vùng kề. BVA 3 giá trị kiểm tra biên và hai láng giềng hai phía. Xác định rõ miền rời rạc hay liên tục và bước dữ liệu trước khi chọn giá trị.','Miền nguyên 18–60: 2-value dùng 17,18,60,61. 3-value dùng 17,18,19,59,60,61.'],
-['Bảng quyết định','Liệt kê tổ hợp điều kiện và hành động tương ứng. Mỗi cột là một quy tắc. Bao phủ đầy đủ cần thực thi mọi cột khả thi; loại tổ hợp không thể xảy ra và có thể gộp điều kiện không ảnh hưởng kết quả. Kỹ thuật này tốt cho logic nghiệp vụ nhiều điều kiện.','Giảm giá khi có thẻ thành viên VÀ đơn ≥ 1 triệu: xét bốn tổ hợp true/false.'],
-['Chuyển trạng thái','Mô hình hóa trạng thái, sự kiện, điều kiện bảo vệ và hành động. Bao phủ trạng thái không đảm bảo bao phủ chuyển trạng thái. Bao phủ chuyển hợp lệ cần đi qua mọi chuyển hợp lệ; có thể thiết kế riêng test cho chuyển không hợp lệ. Tránh nhiều chuyển không hợp lệ trong cùng test vì che lỗi.','Tài khoản Active → Locked sau sai mật khẩu đủ số lần; thử đăng nhập ở Locked phải bị từ chối.'],
-['White-box: statement và branch','Statement coverage đo tỷ lệ câu lệnh thực thi. Branch coverage đo tỷ lệ nhánh luồng điều khiển thực thi. Đạt 100% branch suy ra 100% statement, nhưng chiều ngược lại không đúng. Không mức nào chứng minh không có defect.','if(x>0) y=1; test x=1 chạy mọi statement nhưng chưa chạy nhánh false.'],
-['Kỹ thuật dựa trên kinh nghiệm','Error guessing dùng kinh nghiệm để dự đoán lỗi. Exploratory testing kết hợp học, thiết kế và chạy test; có thể theo session, timebox và test charter. Checklist-based testing dùng danh sách điều kiện cần kiểm tra; mức chi tiết có thể khác nhau.','Charter: khám phá rủi ro mất dữ liệu khi mạng gián đoạn trong 30 phút.'],
-['Cộng tác, user story và ATDD','User story thường nêu vai trò, nhu cầu và giá trị; 3C gồm Card, Conversation, Confirmation. Tiêu chí chấp nhận xác định điều kiện để chấp nhận story, có thể theo kịch bản Given/When/Then hoặc quy tắc. ATDD xác định acceptance tests trước khi triển khai qua cộng tác business, developer và tester.','Given số dư 100, When rút 120, Then từ chối và số dư không đổi.']]},
-{title:'Quản lý hoạt động kiểm thử',en:'Managing the Test Activities',min:335,weight:9,topics:[
-['Test planning, entry và exit criteria','Test plan mô tả mục tiêu, phạm vi, nguồn lực, lịch, cách tiếp cận, rủi ro và tiêu chí. Entry criteria là điều kiện bắt đầu, exit criteria là điều kiện kết thúc. Test pyramid gợi ý nhiều test mức thấp và ít test end-to-end hơn. Testing quadrants giúp trao đổi mục đích test, không phải thứ tự bắt buộc.','Entry: môi trường sẵn sàng. Exit: các test ưu tiên cao đã chạy và rủi ro còn lại được chấp thuận.'],
-['Ước lượng và ưu tiên','Có thể ước lượng theo tỷ lệ, ngoại suy, chuyên gia/Wideband Delphi và ước lượng ba điểm. Công thức ba điểm phổ biến E=(a+4m+b)/6. Ưu tiên có thể dựa vào rủi ro, bao phủ hoặc yêu cầu; phụ thuộc kỹ thuật và nguồn lực có thể làm thay đổi thứ tự.','a=2, m=5, b=8 ngày → E=5 ngày. Test chuyển tiền rủi ro cao được ưu tiên.'],
-['Product risk và project risk','Product risk liên quan chất lượng sản phẩm; project risk liên quan thực hiện dự án. Mức rủi ro thường kết hợp khả năng xảy ra và tác động. Phân tích rủi ro định hướng phạm vi, độ sâu, kỹ thuật, ưu tiên và công sức kiểm thử. Kiểm soát rủi ro gồm giảm thiểu và theo dõi.','Tính sai số dư là product risk; thiếu tester trước deadline là project risk.'],
-['Giám sát, kiểm soát và hoàn tất','Theo dõi số test chạy/đạt, defect, bao phủ, công sức và rủi ro. Báo cáo tiến độ hỗ trợ quyết định trong test; báo cáo hoàn tất tổng hợp kết quả, sai lệch, rủi ro tồn và bài học. Kiểm soát test điều chỉnh kế hoạch theo dữ liệu.','Nếu test quan trọng bị chặn môi trường, điều chỉnh lịch và ưu tiên xử lý blocker.'],
-['Configuration và defect management','Quản lý cấu hình nhận diện phiên bản testware, môi trường và đối tượng test để tái lập kết quả. Defect report nên có tóm tắt, môi trường, bước tái hiện, dữ liệu, kỳ vọng, thực tế, mức nghiêm trọng, ưu tiên và bằng chứng. Severity là mức tác động; priority là mức gấp cần sửa.','Lỗi chính tả trang chủ có thể severity thấp nhưng priority cao trước chiến dịch quảng cáo.']]},
-{title:'Công cụ kiểm thử',en:'Test Tools',min:20,weight:2,topics:[
-['Công cụ hỗ trợ kiểm thử','Công cụ hỗ trợ quản lý, review/phân tích tĩnh, thiết kế và tạo dữ liệu, thực thi/bao phủ, kiểm thử phi chức năng, DevOps và cộng tác. Chọn theo mục tiêu và khả năng tích hợp, không theo độ phổ biến đơn thuần.','Công cụ coverage đo mã đã chạy; công cụ quản lý test theo dõi test case, lịch và kết quả.'],
-['Lợi ích và rủi ro tự động hóa','Tự động hóa giúp lặp lại nhất quán, giảm thao tác thủ công và phản hồi nhanh. Rủi ro gồm kỳ vọng thiếu thực tế, chi phí ban đầu/bảo trì, phụ thuộc công cụ và test không ổn định. Cần thử nghiệm nhỏ, đào tạo và theo dõi giá trị. Không tự động hóa được mọi đánh giá và tư duy kiểm thử.','UI đổi selector làm test thất bại dù chức năng đúng; cần bảo trì và thiết kế test hợp lý.']]}];
-// Câu hỏi tự biên soạn; không sao chép đề thi chính thức.
-const raw=[
-[0,0,'Mục tiêu nào phù hợp với kiểm thử?','Cung cấp thông tin về chất lượng và rủi ro','Chứng minh hoàn toàn không có lỗi','Sửa mọi lỗi trong mã','Bảo đảm khách hàng không đổi yêu cầu','Kiểm thử hỗ trợ quyết định và giảm bất định; không thể chứng minh không còn lỗi.'],
-[0,1,'Lập trình viên hiểu nhầm yêu cầu là gì?','Error','Failure','Test case','Exit criterion','Error là sai sót của con người; defect là khiếm khuyết tạo ra trong sản phẩm.'],
-[0,1,'Ứng dụng trả sai số tiền khi chạy là gì?','Failure','Error của người dùng trong mọi trường hợp','Test basis','Root cause đã được xác nhận','Failure là sai lệch quan sát khi thực thi; chưa thể kết luận nguyên nhân gốc.'],
-[0,2,'Kiểm thử toàn bộ thường không khả thi. Nên làm gì?','Chọn test theo rủi ro và kỹ thuật phù hợp','Bỏ mọi vùng không hợp lệ','Chỉ test giao diện','Dừng kiểm thử hoàn toàn','Ưu tiên theo rủi ro và thiết kế có hệ thống giúp sử dụng nguồn lực hữu hạn.'],
-[0,2,'Bộ test cũ ít phát hiện lỗi mới. Nguyên lý nào liên quan?','Test bị mòn theo thời gian','Không có lỗi là hữu ích trong mọi trường hợp','Tất cả defect phân bố đều','Test luôn độc lập bối cảnh','Cần cập nhật test, dữ liệu và kỹ thuật khi sản phẩm và rủi ro thay đổi.'],
-[0,3,'Hoạt động nào quyết định cần kiểm thử cái gì?','Phân tích kiểm thử','Thực thi kiểm thử','Hoàn tất kiểm thử','Debugging','Phân tích xác định điều kiện kiểm thử từ test basis; thiết kế xác định cách kiểm thử.'],
-[0,4,'Whole-team approach có nghĩa gì?','Cả nhóm cùng chịu trách nhiệm về chất lượng','Chỉ tester chịu trách nhiệm chất lượng','Developer không cần test','Tester phải làm mọi nhiệm vụ của nhóm','Chất lượng là trách nhiệm chung, mỗi chuyên môn vẫn có đóng góp riêng.'],
-[0,4,'Lợi ích chính của tính độc lập kiểm thử?','Nhận ra giả định và lỗi từ góc nhìn khác','Loại bỏ nhu cầu cộng tác','Bảo đảm không còn defect','Thay thế hiểu biết nghiệp vụ','Người độc lập có thể nhận ra thiên kiến của tác giả nhưng vẫn cần hợp tác.'],
-[1,0,'Ví dụ nào thể hiện shift left?','Review tiêu chí chấp nhận trước khi viết mã','Chỉ test sau production','Bỏ kiểm thử hệ thống','Chuyển mọi test cho khách hàng','Phản hồi sớm giúp tránh đưa hiểu nhầm vào mã; không thay thế các test về sau.'],
-[1,1,'Kiểm tra giao tiếp giữa ứng dụng với hệ thống ngân hàng thuộc mức nào?','System integration testing','Component testing','Static analysis','Component testing đơn lẻ','System integration tập trung giao diện giữa hệ thống đang test và hệ thống/dịch vụ ngoài.'],
-[1,1,'Đo thời gian phản hồi API là ví dụ của loại test nào?','Non-functional testing','Chỉ functional testing','Chỉ confirmation testing','Review tài liệu','Hiệu năng đánh giá hệ thống hoạt động tốt đến đâu, là đặc tính phi chức năng.'],
-[1,2,'Chạy lại ca từng thất bại sau khi sửa lỗi nhằm mục tiêu gì?','Confirmation testing','Chỉ regression testing','Acceptance review','Risk identification','Confirmation xác nhận lỗi cụ thể được sửa; regression tìm tác dụng phụ.'],
-[1,2,'Sau sửa đăng nhập, kiểm tra thanh toán vẫn đúng là gì?','Regression testing','Chỉ confirmation testing','Inspection','Kiểm thử tĩnh','Regression đánh giá ảnh hưởng ngoài dự kiến của thay đổi.'],
-[1,3,'Nâng hệ điều hành máy chủ có thể cần loại kiểm thử nào?','Maintenance testing','Không cần test vì mã không đổi','Chỉ review user story','Chỉ unit test mới','Thay đổi môi trường là tác nhân kiểm thử bảo trì, cần phân tích tác động.'],
-[2,0,'Hoạt động nào là kiểm thử tĩnh?','Review yêu cầu có hạn mức mâu thuẫn','Chạy script performance','Gọi API với dữ liệu rỗng','Thực thi unit test','Review phát hiện defect trực tiếp trên sản phẩm công việc mà không thực thi.'],
-[2,1,'Ai thường điều phối cuộc review để hoạt động hiệu quả?','Moderator','Khách hàng bất kỳ','Compiler','Chỉ người quản lý ngân sách','Moderator hỗ trợ trao đổi, giữ trọng tâm và xử lý khác biệt trong review.'],
-[2,2,'Review nào thường do tác giả dẫn dắt?','Walkthrough','Inspection luôn luôn','Dynamic testing','Regression testing','Walkthrough thường do author dẫn để giải thích và nhận phản hồi.'],
-[2,2,'Điều gì giúp review thành công?','Mục tiêu rõ và môi trường trao đổi an toàn','Dùng review để đánh giá cá nhân','Tài liệu càng lớn càng tốt','Không cho thời gian chuẩn bị','Mục tiêu rõ, phạm vi phù hợp và tin cậy giúp reviewer tập trung vào chất lượng.'],
-[3,0,'Tuổi nguyên hợp lệ 18–60. Bộ nào bao phủ các phân vùng?','17, 30, 61','18, 30, 60','20, 25, 40','18, 19, 20','Có ba vùng: dưới 18, 18–60 và trên 60; cần ít nhất một đại diện mỗi vùng.'],
-[3,1,'Miền nguyên 18–60. Bộ BVA 2 giá trị là gì?','17, 18, 60, 61','18, 30, 60','17, 19, 59, 61','0, 30, 100','Hai phía của mỗi ranh giới giữa vùng hợp lệ và không hợp lệ được kiểm tra.'],
-[3,1,'Miền nguyên 1–5. Bộ BVA 3 giá trị là gì?','0, 1, 2, 4, 5, 6','0, 1, 5, 6','1, 3, 5','2, 3, 4','Kiểm tra mỗi biên và hai láng giềng: 0,1,2 quanh 1 và 4,5,6 quanh 5.'],
-[3,2,'Hai điều kiện Boolean độc lập có tối đa bao nhiêu tổ hợp?','4','2','3','8','Mỗi điều kiện có hai giá trị, nên 2 × 2 = 4 tổ hợp trước khi loại trường hợp bất khả thi.'],
-[3,2,'Kỹ thuật nào phù hợp quy tắc giảm phí theo nhiều điều kiện?','Decision table testing','Chỉ statement coverage','Chỉ đo tải','Chỉ đo thời gian','Bảng quyết định biểu diễn tổ hợp điều kiện và hành động nghiệp vụ.'],
-[3,3,'Bao phủ mọi trạng thái có chắc bao phủ mọi chuyển hợp lệ?','Không, có thể còn chuyển chưa đi qua','Có, luôn luôn','Chỉ cần một trạng thái','Hai độ bao phủ là đồng nghĩa','Nhiều chuyển khác nhau có thể dẫn vào cùng trạng thái; thăm trạng thái chưa đủ.'],
-[3,4,'100% branch coverage suy ra điều gì?','100% statement coverage','Không còn defect','100% bao phủ mọi đường đi','Mọi yêu cầu đều được kiểm thử','Bao phủ nhánh bao hàm câu lệnh, nhưng không bao hàm mọi đường đi hoặc yêu cầu.'],
-[3,4,'if(x>0) y=1; chạy x=1 đạt mọi câu lệnh. Còn thiếu gì?','Nhánh false của điều kiện','Câu lệnh y=1','Nhánh true','Không thể biết có điều kiện','Đạt statement không đảm bảo branch; x=0 sẽ đi qua nhánh false.'],
-[3,5,'Test charter và timebox thường gắn với kỹ thuật nào?','Exploratory testing','Chỉ BVA','Chỉ statement testing','Chỉ bảng quyết định','Exploratory kết hợp học, thiết kế và thực thi; charter định hướng phạm vi và mục tiêu.'],
-[3,6,'ATDD xác định acceptance tests khi nào?','Trước triển khai, với sự cộng tác của nhóm','Chỉ sau production','Sau khi hết ngân sách','Chỉ sau khi khách hàng báo lỗi','ATDD dùng thảo luận và ví dụ để tạo hiểu biết chung trước lập trình.'],
-[4,0,'Điều kiện môi trường sẵn sàng trước test là gì?','Entry criterion','Exit criterion','Failure','Defect severity','Entry criteria là điều kiện trước khi bắt đầu hoạt động kiểm thử.'],
-[4,0,'Điều nào phù hợp exit criteria?','Các test ưu tiên cao đã chạy và rủi ro còn lại được chấp thuận','Môi trường chưa có dữ liệu','Chưa có yêu cầu để phân tích','Chỉ cần hết giờ bất kể rủi ro','Exit criteria hỗ trợ quyết định hoàn tất; cần xem kết quả và rủi ro còn lại.'],
-[4,1,'Ước lượng a=2, m=5, b=8. E=(a+4m+b)/6 bằng bao nhiêu?','5','4','6','15','(2 + 4×5 + 8)/6 = 30/6 = 5.'],
-[4,2,'Rủi ro tính sai tiền khách hàng thuộc loại nào?','Product risk','Project risk thuần túy','Rủi ro lịch họp','Rủi ro tuyển dụng','Rủi ro chất lượng hay hành vi sản phẩm là product risk.'],
-[4,2,'Thiếu nhân sự kiểm thử trước hạn phát hành là gì?','Project risk','Product risk thuần túy','Test condition','Statement coverage','Nhân sự ảnh hưởng khả năng thực hiện dự án nên thuộc project risk.'],
-[4,2,'Rủi ro nào ưu tiên hơn với ma trận xác suất × tác động?','0,4 × 100','0,1 × 100','0,5 × 10','0,2 × 20','Các điểm lần lượt 40,10,5,4. Giá trị lớn nhất là 40 theo mô hình đã cho.'],
-[4,3,'Thấy test quan trọng bị chặn, điều chỉnh nguồn lực là hoạt động gì?','Test control','Chỉ test monitoring','Chỉ test completion','Static analysis','Monitoring thu thập và đối chiếu; control thực hiện hành động điều chỉnh.'],
-[4,4,'Severity khác priority như thế nào?','Severity là tác động, priority là mức gấp cần sửa','Hai từ luôn đồng nghĩa','Severity là thời gian chạy test','Priority chỉ do compiler quyết định','Tác động và độ gấp có thể khác nhau tùy bối cảnh kinh doanh.'],
-[4,4,'Mục nào giúp tái hiện defect tốt nhất?','Môi trường, dữ liệu, bước chạy, kỳ vọng và thực tế','Chỉ tên người gây lỗi','Chỉ câu: ứng dụng sai','Chỉ số defect trong tháng','Thông tin đủ cụ thể giúp người khác tái hiện và điều tra vấn đề.'],
-[3,5,'Dựa kinh nghiệm lỗi cũ để thử nhập ngày không tồn tại là gì?','Error guessing','Chỉ branch testing','Chỉ EP không cần phân tích','Test planning','Error guessing tận dụng kinh nghiệm để dự đoán defect, error và failure thường gặp.'],
-[5,0,'Công cụ coverage chủ yếu hỗ trợ điều gì?','Đo phần mã đã được thực thi','Chứng minh mọi yêu cầu đều đúng','Tự quyết định toàn bộ rủi ro','Thay thế product owner','Coverage cung cấp số liệu về cấu trúc đã chạy, không đảm bảo chất lượng toàn diện.'],
-[5,1,'Rủi ro thực tế của tự động hóa là gì?','Chi phí bảo trì test và kết quả không ổn định','Không cần đầu tư ban đầu','Luôn tìm được mọi defect','Không cần người phân tích','Test automation vẫn cần đầu tư, kỹ năng, bảo trì và đánh giá giá trị.']
+const chapters = [{
+		title: 'Nền tảng kiểm thử',
+		en: 'Fundamentals of Testing',
+		min: 180,
+		weight: 8,
+		topics: [
+			['Kiểm thử là gì?', 'Kiểm thử gồm nhiều hoạt động nhằm đánh giá chất lượng và phát hiện vấn đề. Kiểm thử động chạy phần mềm; kiểm thử tĩnh xem xét tài liệu hoặc mã mà không chạy. Mục tiêu có thể là tìm lỗi, giảm rủi ro, xác minh yêu cầu, thẩm định nhu cầu và cung cấp thông tin quyết định.', 'Với API chuyển tiền, review yêu cầu là kiểm thử tĩnh; gọi API với số dư thiếu là kiểm thử động.'],
+			['Error, defect, failure và root cause', 'Error là sai sót của con người. Defect là khiếm khuyết trong sản phẩm công việc. Failure là hành vi sai quan sát được khi thực thi. Root cause là nguyên nhân gốc cần xử lý để tránh lặp lại. Một defect có thể chỉ gây failure trong điều kiện cụ thể. Debugging tìm nguyên nhân và sửa defect; testing phát hiện, đánh giá và kiểm tra sau sửa.', 'Lập trình viên hiểu nhầm dấu ≥ thành > (error), mã có điều kiện sai (defect), khách đủ 18 tuổi bị từ chối (failure).'],
+			['Bảy nguyên lý kiểm thử', 'Kiểm thử cho thấy có defect, không chứng minh không có defect; kiểm thử toàn bộ thường không khả thi; kiểm thử sớm tiết kiệm thời gian và tiền; defect thường tập trung; test bị mòn theo thời gian; kiểm thử phụ thuộc bối cảnh; không có defect vẫn vô ích nếu sản phẩm không đáp ứng nhu cầu. Cần bổ sung và thay đổi test khi hệ thống phát triển.', 'Chạy mãi bộ test đăng nhập cũ có thể bỏ qua luồng xác thực mới.'],
+			['Hoạt động, testware và truy vết', 'Lập kế hoạch xác định mục tiêu và cách tiếp cận. Giám sát so sánh thực tế với kế hoạch; kiểm soát điều chỉnh. Phân tích xác định cần test gì; thiết kế xác định test thế nào; triển khai chuẩn bị testware; thực thi so sánh thực tế với kỳ vọng; hoàn tất tổng hợp và lưu tài sản. Truy vết nối yêu cầu, test và defect để đánh giá bao phủ và tác động thay đổi.', 'Yêu cầu R01 → điều kiện kiểm thử → test TC01 → defect D01.'],
+			['Kỹ năng, whole-team và độc lập', 'Tester cần tư duy phản biện, tò mò, giao tiếp, hiểu nghiệp vụ và kỹ thuật. Whole-team approach coi chất lượng là trách nhiệm chung; tester cộng tác với developer và business. Độc lập giúp nhìn khác tác giả, nhưng có thể làm giảm hợp tác nếu tạo khoảng cách. QA hướng vào quy trình và phòng ngừa; testing hướng vào đánh giá sản phẩm.', 'Nêu bằng chứng lỗi và tác động khách hàng thay vì quy lỗi cho người viết mã.']
+		]
+	},
+	{
+		title: 'Kiểm thử trong vòng đời phát triển',
+		en: 'Testing Throughout the SDLC',
+		min: 130,
+		weight: 6,
+		topics: [
+			['SDLC, shift left và DevOps', 'Cách kiểm thử thích nghi với mô hình tuần tự, lặp hoặc tăng trưởng. Hoạt động phát triển nên có hoạt động test tương ứng. Shift left đưa phản hồi sớm hơn, không bỏ kiểm thử sau triển khai. DevOps thúc đẩy cộng tác, CI/CD và tự động hóa; vẫn cần đánh giá thủ công. Retrospective tìm cải tiến cho vòng tiếp theo.', 'Review tiêu chí chấp nhận trước khi lập trình giúp tránh làm sai yêu cầu.'],
+			['Test levels và test types', 'Năm mức: component, component integration, system, system integration và acceptance. Mức test khác nhau ở đối tượng, mục tiêu và trách nhiệm. Loại test gồm functional, non-functional, black-box và white-box. Functional kiểm tra hệ thống làm gì; non-functional đánh giá hệ thống làm tốt đến đâu.', 'Test tích hợp hệ thống kiểm tra kết nối ứng dụng giao dịch với ngân hàng; performance test đo thời gian phản hồi.'],
+			['Confirmation và regression', 'Confirmation test kiểm tra defect đã sửa thành công, thường chạy lại test từng thất bại. Regression test tìm tác dụng phụ do thay đổi ở phần đã sửa hoặc phần khác. Phân tích tác động giúp chọn phạm vi regression. Hai mục tiêu này khác nhau dù có thể dùng chung test case.', 'Sửa tính phí: chạy lại ca tính phí sai để confirmation, kiểm tra tổng tiền rút để regression.'],
+			['Maintenance testing', 'Kiểm thử bảo trì xuất phát từ sửa đổi, di chuyển môi trường hoặc ngừng hệ thống. Phạm vi phụ thuộc rủi ro, kích thước thay đổi và quy mô hệ thống. Phân tích tác động xác định khu vực bị ảnh hưởng, cả các hệ thống liên quan.', 'Nâng cơ sở dữ liệu cần kiểm tra tương thích, dữ liệu, backup/restore và các tích hợp.']
+		]
+	},
+	{
+		title: 'Kiểm thử tĩnh',
+		en: 'Static Testing',
+		min: 80,
+		weight: 4,
+		topics: [
+			['Giá trị của static testing', 'Không cần chạy phần mềm: review yêu cầu, thiết kế, mã, test case hoặc phân tích tĩnh bằng công cụ. Tìm trực tiếp defect như mơ hồ, thiếu nhất quán, mã không đạt chuẩn. Dynamic testing thường quan sát failure rồi điều tra defect. Tĩnh và động bổ sung nhau.', 'Hai mục yêu cầu quy định hạn mức khác nhau có thể phát hiện ngay trong review.'],
+			['Quy trình và vai trò review', 'Các hoạt động: lập kế hoạch, khởi động, review cá nhân, trao đổi/phân tích, sửa và báo cáo. Author tạo sản phẩm; reviewer tìm bất thường; moderator điều phối; scribe ghi nhận; review leader chịu trách nhiệm tổ chức; manager cấp nguồn lực. Không phải review nào cũng cần tất cả vai trò tách biệt.', 'Reviewer ghi bất thường trước họp; tác giả sửa sau khi nhóm thống nhất defect.'],
+			['Các loại review và yếu tố thành công', 'Informal review ít nghi thức; walkthrough thường do tác giả dẫn; technical review có reviewer chuyên môn và moderator; inspection là loại chính thức nhất, theo quy trình và thu thập số liệu. Mục tiêu rõ, tài liệu nhỏ, thời gian đủ, môi trường tin cậy và hỗ trợ quản lý giúp review hiệu quả.', 'Chọn walkthrough để tác giả giải thích luồng nghiệp vụ mới và nhận phản hồi sớm.']
+		]
+	},
+	{
+		title: 'Phân tích & thiết kế kiểm thử',
+		en: 'Test Analysis and Design',
+		min: 390,
+		weight: 11,
+		topics: [
+			['Phân vùng tương đương — EP', 'Chia dữ liệu thành các vùng được kỳ vọng xử lý giống nhau. Chọn đại diện mỗi vùng, gồm vùng hợp lệ và không hợp lệ. Bao phủ EP = số vùng đã test / tổng vùng đã xác định. Việc chọn một đại diện không đảm bảo mọi giá trị trong vùng đều đúng.', 'Tuổi hợp lệ 18–60, số nguyên: ba vùng <18, 18–60, >60. Chọn 17, 30, 61.'],
+			['Phân tích giá trị biên — BVA', 'Dùng cho phân vùng có thứ tự. BVA 2 giá trị kiểm tra giá trị biên và láng giềng gần nhất thuộc vùng kề. BVA 3 giá trị kiểm tra biên và hai láng giềng hai phía. Xác định rõ miền rời rạc hay liên tục và bước dữ liệu trước khi chọn giá trị.', 'Miền nguyên 18–60: 2-value dùng 17,18,60,61. 3-value dùng 17,18,19,59,60,61.'],
+			['Bảng quyết định', 'Liệt kê tổ hợp điều kiện và hành động tương ứng. Mỗi cột là một quy tắc. Bao phủ đầy đủ cần thực thi mọi cột khả thi; loại tổ hợp không thể xảy ra và có thể gộp điều kiện không ảnh hưởng kết quả. Kỹ thuật này tốt cho logic nghiệp vụ nhiều điều kiện.', 'Giảm giá khi có thẻ thành viên VÀ đơn ≥ 1 triệu: xét bốn tổ hợp true/false.'],
+			['Chuyển trạng thái', 'Mô hình hóa trạng thái, sự kiện, điều kiện bảo vệ và hành động. Bao phủ trạng thái không đảm bảo bao phủ chuyển trạng thái. Bao phủ chuyển hợp lệ cần đi qua mọi chuyển hợp lệ; có thể thiết kế riêng test cho chuyển không hợp lệ. Tránh nhiều chuyển không hợp lệ trong cùng test vì che lỗi.', 'Tài khoản Active → Locked sau sai mật khẩu đủ số lần; thử đăng nhập ở Locked phải bị từ chối.'],
+			['White-box: statement và branch', 'Statement coverage đo tỷ lệ câu lệnh thực thi. Branch coverage đo tỷ lệ nhánh luồng điều khiển thực thi. Đạt 100% branch suy ra 100% statement, nhưng chiều ngược lại không đúng. Không mức nào chứng minh không có defect.', 'if(x>0) y=1; test x=1 chạy mọi statement nhưng chưa chạy nhánh false.'],
+			['Kỹ thuật dựa trên kinh nghiệm', 'Error guessing dùng kinh nghiệm để dự đoán lỗi. Exploratory testing kết hợp học, thiết kế và chạy test; có thể theo session, timebox và test charter. Checklist-based testing dùng danh sách điều kiện cần kiểm tra; mức chi tiết có thể khác nhau.', 'Charter: khám phá rủi ro mất dữ liệu khi mạng gián đoạn trong 30 phút.'],
+			['Cộng tác, user story và ATDD', 'User story thường nêu vai trò, nhu cầu và giá trị; 3C gồm Card, Conversation, Confirmation. Tiêu chí chấp nhận xác định điều kiện để chấp nhận story, có thể theo kịch bản Given/When/Then hoặc quy tắc. ATDD xác định acceptance tests trước khi triển khai qua cộng tác business, developer và tester.', 'Given số dư 100, When rút 120, Then từ chối và số dư không đổi.']
+		]
+	},
+	{
+		title: 'Quản lý hoạt động kiểm thử',
+		en: 'Managing the Test Activities',
+		min: 335,
+		weight: 9,
+		topics: [
+			['Test planning, entry và exit criteria', 'Test plan mô tả mục tiêu, phạm vi, nguồn lực, lịch, cách tiếp cận, rủi ro và tiêu chí. Entry criteria là điều kiện bắt đầu, exit criteria là điều kiện kết thúc. Test pyramid gợi ý nhiều test mức thấp và ít test end-to-end hơn. Testing quadrants giúp trao đổi mục đích test, không phải thứ tự bắt buộc.', 'Entry: môi trường sẵn sàng. Exit: các test ưu tiên cao đã chạy và rủi ro còn lại được chấp thuận.'],
+			['Ước lượng và ưu tiên', 'Có thể ước lượng theo tỷ lệ, ngoại suy, chuyên gia/Wideband Delphi và ước lượng ba điểm. Công thức ba điểm phổ biến E=(a+4m+b)/6. Ưu tiên có thể dựa vào rủi ro, bao phủ hoặc yêu cầu; phụ thuộc kỹ thuật và nguồn lực có thể làm thay đổi thứ tự.', 'a=2, m=5, b=8 ngày → E=5 ngày. Test chuyển tiền rủi ro cao được ưu tiên.'],
+			['Product risk và project risk', 'Product risk liên quan chất lượng sản phẩm; project risk liên quan thực hiện dự án. Mức rủi ro thường kết hợp khả năng xảy ra và tác động. Phân tích rủi ro định hướng phạm vi, độ sâu, kỹ thuật, ưu tiên và công sức kiểm thử. Kiểm soát rủi ro gồm giảm thiểu và theo dõi.', 'Tính sai số dư là product risk; thiếu tester trước deadline là project risk.'],
+			['Giám sát, kiểm soát và hoàn tất', 'Theo dõi số test chạy/đạt, defect, bao phủ, công sức và rủi ro. Báo cáo tiến độ hỗ trợ quyết định trong test; báo cáo hoàn tất tổng hợp kết quả, sai lệch, rủi ro tồn và bài học. Kiểm soát test điều chỉnh kế hoạch theo dữ liệu.', 'Nếu test quan trọng bị chặn môi trường, điều chỉnh lịch và ưu tiên xử lý blocker.'],
+			['Configuration và defect management', 'Quản lý cấu hình nhận diện phiên bản testware, môi trường và đối tượng test để tái lập kết quả. Defect report nên có tóm tắt, môi trường, bước tái hiện, dữ liệu, kỳ vọng, thực tế, mức nghiêm trọng, ưu tiên và bằng chứng. Severity là mức tác động; priority là mức gấp cần sửa.', 'Lỗi chính tả trang chủ có thể severity thấp nhưng priority cao trước chiến dịch quảng cáo.']
+		]
+	},
+	{
+		title: 'Công cụ kiểm thử',
+		en: 'Test Tools',
+		min: 20,
+		weight: 2,
+		topics: [
+			['Công cụ hỗ trợ kiểm thử', 'Công cụ hỗ trợ quản lý, review/phân tích tĩnh, thiết kế và tạo dữ liệu, thực thi/bao phủ, kiểm thử phi chức năng, DevOps và cộng tác. Chọn theo mục tiêu và khả năng tích hợp, không theo độ phổ biến đơn thuần.', 'Công cụ coverage đo mã đã chạy; công cụ quản lý test theo dõi test case, lịch và kết quả.'],
+			['Lợi ích và rủi ro tự động hóa', 'Tự động hóa giúp lặp lại nhất quán, giảm thao tác thủ công và phản hồi nhanh. Rủi ro gồm kỳ vọng thiếu thực tế, chi phí ban đầu/bảo trì, phụ thuộc công cụ và test không ổn định. Cần thử nghiệm nhỏ, đào tạo và theo dõi giá trị. Không tự động hóa được mọi đánh giá và tư duy kiểm thử.', 'UI đổi selector làm test thất bại dù chức năng đúng; cần bảo trì và thiết kế test hợp lý.']
+		]
+	}
 ];
-const questions=raw.map((r,id)=>({id,c:r[0],t:r[1],q:r[2],options:r.slice(3,7),answer:0,why:r[7],lo:`${r[0]+1}.${r[1]+1}`}));
-const terms=[['Testing','Kiểm thử','Các hoạt động đánh giá chất lượng và phát hiện vấn đề.'],['Error','Sai sót','Hành động của con người tạo ra kết quả không đúng.'],['Defect','Khiếm khuyết','Vấn đề trong sản phẩm công việc khiến nó không đáp ứng yêu cầu.'],['Failure','Sự cố biểu hiện','Hành vi sai quan sát khi hệ thống thực thi.'],['Test basis','Cơ sở kiểm thử','Nguồn thông tin dùng cho phân tích và thiết kế test.'],['Testware','Sản phẩm kiểm thử','Các tài sản tạo ra trong kiểm thử, như test case, script, báo cáo.'],['Traceability','Khả năng truy vết','Liên kết giữa yêu cầu, điều kiện test, test case, kết quả và defect.'],['Regression testing','Kiểm thử hồi quy','Kiểm tra tác dụng phụ của thay đổi.'],['Confirmation testing','Kiểm thử xác nhận','Kiểm tra defect cụ thể đã được sửa.'],['Static testing','Kiểm thử tĩnh','Đánh giá sản phẩm công việc mà không thực thi phần mềm.'],['Equivalence partitioning','Phân vùng tương đương','Chia miền dữ liệu thành vùng có xử lý kỳ vọng tương tự.'],['Boundary value analysis','Phân tích giá trị biên','Thiết kế test quanh các biên của phân vùng có thứ tự.'],['Decision table','Bảng quyết định','Biểu diễn tổ hợp điều kiện và hành động.'],['Branch coverage','Bao phủ nhánh','Tỷ lệ nhánh đã thực thi trên tổng nhánh.'],['Exploratory testing','Kiểm thử khám phá','Học, thiết kế và thực thi test đồng thời.'],['Acceptance criteria','Tiêu chí chấp nhận','Điều kiện mà sản phẩm cần thỏa để được chấp nhận.'],['Product risk','Rủi ro sản phẩm','Rủi ro về chất lượng sản phẩm.'],['Project risk','Rủi ro dự án','Rủi ro cản trở việc thực hiện dự án.'],['Severity','Mức nghiêm trọng','Mức độ tác động của defect.'],['Priority','Độ ưu tiên','Mức độ gấp cần xử lý defect.'],['Entry criteria','Tiêu chí đầu vào','Điều kiện để bắt đầu một hoạt động.'],['Exit criteria','Tiêu chí kết thúc','Điều kiện để hoàn tất hoạt động.'],['Test oracle','Nguồn xác định kỳ vọng','Nguồn giúp xác định kết quả mong đợi để so sánh với thực tế.'],['Whole-team approach','Cách tiếp cận toàn nhóm','Cả nhóm cùng chịu trách nhiệm chất lượng.']];
+// Câu hỏi tự biên soạn; không sao chép đề thi chính thức.
+const raw = [
+	[0, 0, 'Mục tiêu nào phù hợp với kiểm thử?', 'Cung cấp thông tin về chất lượng và rủi ro', 'Chứng minh hoàn toàn không có lỗi', 'Sửa mọi lỗi trong mã', 'Bảo đảm khách hàng không đổi yêu cầu', 'Kiểm thử hỗ trợ quyết định và giảm bất định; không thể chứng minh không còn lỗi.'],
+	[0, 1, 'Lập trình viên hiểu nhầm yêu cầu là gì?', 'Error', 'Failure', 'Test case', 'Exit criterion', 'Error là sai sót của con người; defect là khiếm khuyết tạo ra trong sản phẩm.'],
+	[0, 1, 'Ứng dụng trả sai số tiền khi chạy là gì?', 'Failure', 'Error của người dùng trong mọi trường hợp', 'Test basis', 'Root cause đã được xác nhận', 'Failure là sai lệch quan sát khi thực thi; chưa thể kết luận nguyên nhân gốc.'],
+	[0, 2, 'Kiểm thử toàn bộ thường không khả thi. Nên làm gì?', 'Chọn test theo rủi ro và kỹ thuật phù hợp', 'Bỏ mọi vùng không hợp lệ', 'Chỉ test giao diện', 'Dừng kiểm thử hoàn toàn', 'Ưu tiên theo rủi ro và thiết kế có hệ thống giúp sử dụng nguồn lực hữu hạn.'],
+	[0, 2, 'Bộ test cũ ít phát hiện lỗi mới. Nguyên lý nào liên quan?', 'Test bị mòn theo thời gian', 'Không có lỗi là hữu ích trong mọi trường hợp', 'Tất cả defect phân bố đều', 'Test luôn độc lập bối cảnh', 'Cần cập nhật test, dữ liệu và kỹ thuật khi sản phẩm và rủi ro thay đổi.'],
+	[0, 3, 'Hoạt động nào quyết định cần kiểm thử cái gì?', 'Phân tích kiểm thử', 'Thực thi kiểm thử', 'Hoàn tất kiểm thử', 'Debugging', 'Phân tích xác định điều kiện kiểm thử từ test basis; thiết kế xác định cách kiểm thử.'],
+	[0, 4, 'Whole-team approach có nghĩa gì?', 'Cả nhóm cùng chịu trách nhiệm về chất lượng', 'Chỉ tester chịu trách nhiệm chất lượng', 'Developer không cần test', 'Tester phải làm mọi nhiệm vụ của nhóm', 'Chất lượng là trách nhiệm chung, mỗi chuyên môn vẫn có đóng góp riêng.'],
+	[0, 4, 'Lợi ích chính của tính độc lập kiểm thử?', 'Nhận ra giả định và lỗi từ góc nhìn khác', 'Loại bỏ nhu cầu cộng tác', 'Bảo đảm không còn defect', 'Thay thế hiểu biết nghiệp vụ', 'Người độc lập có thể nhận ra thiên kiến của tác giả nhưng vẫn cần hợp tác.'],
+	[1, 0, 'Ví dụ nào thể hiện shift left?', 'Review tiêu chí chấp nhận trước khi viết mã', 'Chỉ test sau production', 'Bỏ kiểm thử hệ thống', 'Chuyển mọi test cho khách hàng', 'Phản hồi sớm giúp tránh đưa hiểu nhầm vào mã; không thay thế các test về sau.'],
+	[1, 1, 'Kiểm tra giao tiếp giữa ứng dụng với hệ thống ngân hàng thuộc mức nào?', 'System integration testing', 'Component testing', 'Static analysis', 'Component testing đơn lẻ', 'System integration tập trung giao diện giữa hệ thống đang test và hệ thống/dịch vụ ngoài.'],
+	[1, 1, 'Đo thời gian phản hồi API là ví dụ của loại test nào?', 'Non-functional testing', 'Chỉ functional testing', 'Chỉ confirmation testing', 'Review tài liệu', 'Hiệu năng đánh giá hệ thống hoạt động tốt đến đâu, là đặc tính phi chức năng.'],
+	[1, 2, 'Chạy lại ca từng thất bại sau khi sửa lỗi nhằm mục tiêu gì?', 'Confirmation testing', 'Chỉ regression testing', 'Acceptance review', 'Risk identification', 'Confirmation xác nhận lỗi cụ thể được sửa; regression tìm tác dụng phụ.'],
+	[1, 2, 'Sau sửa đăng nhập, kiểm tra thanh toán vẫn đúng là gì?', 'Regression testing', 'Chỉ confirmation testing', 'Inspection', 'Kiểm thử tĩnh', 'Regression đánh giá ảnh hưởng ngoài dự kiến của thay đổi.'],
+	[1, 3, 'Nâng hệ điều hành máy chủ có thể cần loại kiểm thử nào?', 'Maintenance testing', 'Không cần test vì mã không đổi', 'Chỉ review user story', 'Chỉ unit test mới', 'Thay đổi môi trường là tác nhân kiểm thử bảo trì, cần phân tích tác động.'],
+	[2, 0, 'Hoạt động nào là kiểm thử tĩnh?', 'Review yêu cầu có hạn mức mâu thuẫn', 'Chạy script performance', 'Gọi API với dữ liệu rỗng', 'Thực thi unit test', 'Review phát hiện defect trực tiếp trên sản phẩm công việc mà không thực thi.'],
+	[2, 1, 'Ai thường điều phối cuộc review để hoạt động hiệu quả?', 'Moderator', 'Khách hàng bất kỳ', 'Compiler', 'Chỉ người quản lý ngân sách', 'Moderator hỗ trợ trao đổi, giữ trọng tâm và xử lý khác biệt trong review.'],
+	[2, 2, 'Review nào thường do tác giả dẫn dắt?', 'Walkthrough', 'Inspection luôn luôn', 'Dynamic testing', 'Regression testing', 'Walkthrough thường do author dẫn để giải thích và nhận phản hồi.'],
+	[2, 2, 'Điều gì giúp review thành công?', 'Mục tiêu rõ và môi trường trao đổi an toàn', 'Dùng review để đánh giá cá nhân', 'Tài liệu càng lớn càng tốt', 'Không cho thời gian chuẩn bị', 'Mục tiêu rõ, phạm vi phù hợp và tin cậy giúp reviewer tập trung vào chất lượng.'],
+	[3, 0, 'Tuổi nguyên hợp lệ 18–60. Bộ nào bao phủ các phân vùng?', '17, 30, 61', '18, 30, 60', '20, 25, 40', '18, 19, 20', 'Có ba vùng: dưới 18, 18–60 và trên 60; cần ít nhất một đại diện mỗi vùng.'],
+	[3, 1, 'Miền nguyên 18–60. Bộ BVA 2 giá trị là gì?', '17, 18, 60, 61', '18, 30, 60', '17, 19, 59, 61', '0, 30, 100', 'Hai phía của mỗi ranh giới giữa vùng hợp lệ và không hợp lệ được kiểm tra.'],
+	[3, 1, 'Miền nguyên 1–5. Bộ BVA 3 giá trị là gì?', '0, 1, 2, 4, 5, 6', '0, 1, 5, 6', '1, 3, 5', '2, 3, 4', 'Kiểm tra mỗi biên và hai láng giềng: 0,1,2 quanh 1 và 4,5,6 quanh 5.'],
+	[3, 2, 'Hai điều kiện Boolean độc lập có tối đa bao nhiêu tổ hợp?', '4', '2', '3', '8', 'Mỗi điều kiện có hai giá trị, nên 2 × 2 = 4 tổ hợp trước khi loại trường hợp bất khả thi.'],
+	[3, 2, 'Kỹ thuật nào phù hợp quy tắc giảm phí theo nhiều điều kiện?', 'Decision table testing', 'Chỉ statement coverage', 'Chỉ đo tải', 'Chỉ đo thời gian', 'Bảng quyết định biểu diễn tổ hợp điều kiện và hành động nghiệp vụ.'],
+	[3, 3, 'Bao phủ mọi trạng thái có chắc bao phủ mọi chuyển hợp lệ?', 'Không, có thể còn chuyển chưa đi qua', 'Có, luôn luôn', 'Chỉ cần một trạng thái', 'Hai độ bao phủ là đồng nghĩa', 'Nhiều chuyển khác nhau có thể dẫn vào cùng trạng thái; thăm trạng thái chưa đủ.'],
+	[3, 4, '100% branch coverage suy ra điều gì?', '100% statement coverage', 'Không còn defect', '100% bao phủ mọi đường đi', 'Mọi yêu cầu đều được kiểm thử', 'Bao phủ nhánh bao hàm câu lệnh, nhưng không bao hàm mọi đường đi hoặc yêu cầu.'],
+	[3, 4, 'if(x>0) y=1; chạy x=1 đạt mọi câu lệnh. Còn thiếu gì?', 'Nhánh false của điều kiện', 'Câu lệnh y=1', 'Nhánh true', 'Không thể biết có điều kiện', 'Đạt statement không đảm bảo branch; x=0 sẽ đi qua nhánh false.'],
+	[3, 5, 'Test charter và timebox thường gắn với kỹ thuật nào?', 'Exploratory testing', 'Chỉ BVA', 'Chỉ statement testing', 'Chỉ bảng quyết định', 'Exploratory kết hợp học, thiết kế và thực thi; charter định hướng phạm vi và mục tiêu.'],
+	[3, 6, 'ATDD xác định acceptance tests khi nào?', 'Trước triển khai, với sự cộng tác của nhóm', 'Chỉ sau production', 'Sau khi hết ngân sách', 'Chỉ sau khi khách hàng báo lỗi', 'ATDD dùng thảo luận và ví dụ để tạo hiểu biết chung trước lập trình.'],
+	[4, 0, 'Điều kiện môi trường sẵn sàng trước test là gì?', 'Entry criterion', 'Exit criterion', 'Failure', 'Defect severity', 'Entry criteria là điều kiện trước khi bắt đầu hoạt động kiểm thử.'],
+	[4, 0, 'Điều nào phù hợp exit criteria?', 'Các test ưu tiên cao đã chạy và rủi ro còn lại được chấp thuận', 'Môi trường chưa có dữ liệu', 'Chưa có yêu cầu để phân tích', 'Chỉ cần hết giờ bất kể rủi ro', 'Exit criteria hỗ trợ quyết định hoàn tất; cần xem kết quả và rủi ro còn lại.'],
+	[4, 1, 'Ước lượng a=2, m=5, b=8. E=(a+4m+b)/6 bằng bao nhiêu?', '5', '4', '6', '15', '(2 + 4×5 + 8)/6 = 30/6 = 5.'],
+	[4, 2, 'Rủi ro tính sai tiền khách hàng thuộc loại nào?', 'Product risk', 'Project risk thuần túy', 'Rủi ro lịch họp', 'Rủi ro tuyển dụng', 'Rủi ro chất lượng hay hành vi sản phẩm là product risk.'],
+	[4, 2, 'Thiếu nhân sự kiểm thử trước hạn phát hành là gì?', 'Project risk', 'Product risk thuần túy', 'Test condition', 'Statement coverage', 'Nhân sự ảnh hưởng khả năng thực hiện dự án nên thuộc project risk.'],
+	[4, 2, 'Rủi ro nào ưu tiên hơn với ma trận xác suất × tác động?', '0,4 × 100', '0,1 × 100', '0,5 × 10', '0,2 × 20', 'Các điểm lần lượt 40,10,5,4. Giá trị lớn nhất là 40 theo mô hình đã cho.'],
+	[4, 3, 'Thấy test quan trọng bị chặn, điều chỉnh nguồn lực là hoạt động gì?', 'Test control', 'Chỉ test monitoring', 'Chỉ test completion', 'Static analysis', 'Monitoring thu thập và đối chiếu; control thực hiện hành động điều chỉnh.'],
+	[4, 4, 'Severity khác priority như thế nào?', 'Severity là tác động, priority là mức gấp cần sửa', 'Hai từ luôn đồng nghĩa', 'Severity là thời gian chạy test', 'Priority chỉ do compiler quyết định', 'Tác động và độ gấp có thể khác nhau tùy bối cảnh kinh doanh.'],
+	[4, 4, 'Mục nào giúp tái hiện defect tốt nhất?', 'Môi trường, dữ liệu, bước chạy, kỳ vọng và thực tế', 'Chỉ tên người gây lỗi', 'Chỉ câu: ứng dụng sai', 'Chỉ số defect trong tháng', 'Thông tin đủ cụ thể giúp người khác tái hiện và điều tra vấn đề.'],
+	[3, 5, 'Dựa kinh nghiệm lỗi cũ để thử nhập ngày không tồn tại là gì?', 'Error guessing', 'Chỉ branch testing', 'Chỉ EP không cần phân tích', 'Test planning', 'Error guessing tận dụng kinh nghiệm để dự đoán defect, error và failure thường gặp.'],
+	[5, 0, 'Công cụ coverage chủ yếu hỗ trợ điều gì?', 'Đo phần mã đã được thực thi', 'Chứng minh mọi yêu cầu đều đúng', 'Tự quyết định toàn bộ rủi ro', 'Thay thế product owner', 'Coverage cung cấp số liệu về cấu trúc đã chạy, không đảm bảo chất lượng toàn diện.'],
+	[5, 1, 'Rủi ro thực tế của tự động hóa là gì?', 'Chi phí bảo trì test và kết quả không ổn định', 'Không cần đầu tư ban đầu', 'Luôn tìm được mọi defect', 'Không cần người phân tích', 'Test automation vẫn cần đầu tư, kỹ năng, bảo trì và đánh giá giá trị.']
+];
+const questions = raw.map((r, id) => ({
+	id,
+	c: r[0],
+	t: r[1],
+	q: r[2],
+	options: r.slice(3, 7),
+	answer: 0,
+	why: r[7],
+	lo: `${r[0]+1}.${r[1]+1}`
+}));
+const terms = [
+	['Testing', 'Kiểm thử', 'Các hoạt động đánh giá chất lượng và phát hiện vấn đề.'],
+	['Error', 'Sai sót', 'Hành động của con người tạo ra kết quả không đúng.'],
+	['Defect', 'Khiếm khuyết', 'Vấn đề trong sản phẩm công việc khiến nó không đáp ứng yêu cầu.'],
+	['Failure', 'Sự cố biểu hiện', 'Hành vi sai quan sát khi hệ thống thực thi.'],
+	['Test basis', 'Cơ sở kiểm thử', 'Nguồn thông tin dùng cho phân tích và thiết kế test.'],
+	['Testware', 'Sản phẩm kiểm thử', 'Các tài sản tạo ra trong kiểm thử, như test case, script, báo cáo.'],
+	['Traceability', 'Khả năng truy vết', 'Liên kết giữa yêu cầu, điều kiện test, test case, kết quả và defect.'],
+	['Regression testing', 'Kiểm thử hồi quy', 'Kiểm tra tác dụng phụ của thay đổi.'],
+	['Confirmation testing', 'Kiểm thử xác nhận', 'Kiểm tra defect cụ thể đã được sửa.'],
+	['Static testing', 'Kiểm thử tĩnh', 'Đánh giá sản phẩm công việc mà không thực thi phần mềm.'],
+	['Equivalence partitioning', 'Phân vùng tương đương', 'Chia miền dữ liệu thành vùng có xử lý kỳ vọng tương tự.'],
+	['Boundary value analysis', 'Phân tích giá trị biên', 'Thiết kế test quanh các biên của phân vùng có thứ tự.'],
+	['Decision table', 'Bảng quyết định', 'Biểu diễn tổ hợp điều kiện và hành động.'],
+	['Branch coverage', 'Bao phủ nhánh', 'Tỷ lệ nhánh đã thực thi trên tổng nhánh.'],
+	['Exploratory testing', 'Kiểm thử khám phá', 'Học, thiết kế và thực thi test đồng thời.'],
+	['Acceptance criteria', 'Tiêu chí chấp nhận', 'Điều kiện mà sản phẩm cần thỏa để được chấp nhận.'],
+	['Product risk', 'Rủi ro sản phẩm', 'Rủi ro về chất lượng sản phẩm.'],
+	['Project risk', 'Rủi ro dự án', 'Rủi ro cản trở việc thực hiện dự án.'],
+	['Severity', 'Mức nghiêm trọng', 'Mức độ tác động của defect.'],
+	['Priority', 'Độ ưu tiên', 'Mức độ gấp cần xử lý defect.'],
+	['Entry criteria', 'Tiêu chí đầu vào', 'Điều kiện để bắt đầu một hoạt động.'],
+	['Exit criteria', 'Tiêu chí kết thúc', 'Điều kiện để hoàn tất hoạt động.'],
+	['Test oracle', 'Nguồn xác định kỳ vọng', 'Nguồn giúp xác định kết quả mong đợi để so sánh với thực tế.'],
+	['Whole-team approach', 'Cách tiếp cận toàn nhóm', 'Cả nhóm cùng chịu trách nhiệm chất lượng.']
+];
